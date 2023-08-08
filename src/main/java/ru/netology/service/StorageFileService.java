@@ -31,7 +31,7 @@ public class StorageFileService {
     private UserRepository userRepository;
 
 
-    public boolean uploadFile(String authToken, String filename, MultipartFile file) {
+    public boolean uploadFile(String authToken, String filename, Long fileSize, byte[] fileContent ) {
         final User user = getUserByAuthToken(authToken);
         if (user == null) {
             log.error("Upload file: Unauthorized");
@@ -39,7 +39,7 @@ public class StorageFileService {
         }
 
         try {
-            storageFileRepository.save(new StorageFile(filename, LocalDateTime.now(), file.getSize(), file.getBytes(), user));
+            storageFileRepository.save(new StorageFile(filename, LocalDateTime.now(), fileSize, fileContent, user));
             log.info("Success upload file. User {}", user.getUsername());
             return true;
         } catch (IOException e) {

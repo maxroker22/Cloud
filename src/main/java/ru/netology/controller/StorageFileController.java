@@ -22,7 +22,7 @@ public class StorageFileController {
 
     @PostMapping("/file")
     public ResponseEntity<?> uploadFile(@RequestHeader("auth-token") String authToken, @RequestParam("filename") String filename, MultipartFile file) {
-        storageFileService.uploadFile(authToken, filename, file);
+        storageFileService.uploadFile(authToken, filename, file, file.getSize(), file.getBytes());
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
