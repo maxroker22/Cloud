@@ -11,6 +11,7 @@ import ru.netology.dto.request.EditFileNameRequest;
 import ru.netology.dto.response.FileResponse;
 import ru.netology.service.StorageFileService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,11 @@ public class StorageFileController {
 
     @PostMapping("/file")
     public ResponseEntity<?> uploadFile(@RequestHeader("auth-token") String authToken, @RequestParam("filename") String filename, MultipartFile file) {
-        storageFileService.uploadFile(authToken, filename, file, file.getSize(), file.getBytes());
+        try {
+            storageFileService.uploadFile(authToken, filename, file, file.getSize(), file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
