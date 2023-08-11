@@ -9,7 +9,6 @@ import ru.netology.dto.request.EditFileNameRequest;
 import ru.netology.dto.response.FileResponse;
 import ru.netology.exception.InputDataException;
 import ru.netology.exception.UnauthorizedException;
-import ru.netology.exception.UploadFileException;
 import ru.netology.model.StorageFile;
 import ru.netology.model.User;
 import ru.netology.repository.AuthenticationRepository;
@@ -31,21 +30,16 @@ public class StorageFileService {
     private UserRepository userRepository;
 
 
-    public boolean uploadFile(String authToken, String filename, Long fileSize, byte[] fileContent ) {
+    public boolean uploadFile(String authToken, String filename, MultipartFile file, Long fileSize, byte[] fileContent ) {
         final User user = getUserByAuthToken(authToken);
         if (user == null) {
             log.error("Upload file: Unauthorized");
             throw new UnauthorizedException("Upload file: Unauthorized");
         }
 
-        try {
-            storageFileRepository.save(new StorageFile(filename, LocalDateTime.now(), fileSize, fileContent, user));
-            log.info("Success upload file. User {}", user.getUsername());
-            return true;
-        } catch (IOException e) {
-            log.error("Upload file: Input data exception");
-            throw new InputDataException("Upload file: Input data exception");
-        }
+        storageFileRepository.save(new StorageFile(filename, LocalDateTime.now(), fileSize, fileContent, user));
+        log.info("Success upload file. User {}", user.getUsername());
+        return true;
     }
 
     @Transactional
